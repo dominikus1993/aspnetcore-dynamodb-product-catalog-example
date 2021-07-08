@@ -14,4 +14,6 @@ namespace Sample.Core.Dto
 
         }
     }
+
+
 }

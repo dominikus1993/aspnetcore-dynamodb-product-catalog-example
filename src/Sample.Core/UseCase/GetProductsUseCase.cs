@@ -8,27 +8,28 @@ using System.Threading.Tasks;
 
 namespace Sample.Core.UseCase
 {
-    public record GetProduct(int Id, int ShopNumber);
+    public record GetProducts(IEnumerable<int> Ids, int ShopNumber);
 
-    public sealed class GetProductUseCase
+    public sealed class GetProductsUseCase
     {
         private IProductRepository _productRepository;
 
-        public GetProductUseCase(IProductRepository productRepository)
+        public GetProductsUseCase(IProductRepository productRepository)
         {
             _productRepository = productRepository;
         }
 
-        public async Task<ProductDto?> GetProduct(GetProduct query)
+        public async Task<IEnumerable<ProductDto>> GetProducts(GetProducts query)
         {
-            var result = await _productRepository.GetProduct(query.Id, query.ShopNumber);
-
-            if (result is null)
+            var result = await _productRepository.GetProducts(query.Ids, query.ShopNumber)
+                                                    .Select(product => new ProductDto(product))
+                                                    .ToListAsync();
+            if (result is null || result.Count == 0)
             {
-                return null;
+                return Enumerable.Empty<ProductDto>();
             }
 
-            return new ProductDto(result);
+            return result;
         }
     }
 }

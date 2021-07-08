@@ -24,5 +24,17 @@ namespace Sample.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("shops/{shopNumber:int}/products")]
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetProducts(int shopNumber, [FromQuery] IEnumerable<int> productIds, [FromServices] GetProductsUseCase useCase)
+        {
+            var result = await useCase.GetProducts(new GetProducts(productIds, shopNumber));
+            if (result is null)
+            {
+                return NoContent();
+            }
+
+            return Ok(result);
+        }
     }
 }

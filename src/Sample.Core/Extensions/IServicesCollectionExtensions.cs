@@ -13,7 +13,7 @@ namespace Sample.Core.Extensions
         public static IServiceCollection AddCore(this IServiceCollection services)
         {
             services.AddTransient<GetProductUseCase>();
-
+            services.AddTransient<GetProductsUseCase>();
             return services;
         }
     }
