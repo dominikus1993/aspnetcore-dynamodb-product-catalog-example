@@ -18,10 +18,11 @@ namespace Sample.Core.Extensions
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
-            var credentials = new BasicAWSCredentials("<ACCESS_KEY>", "<SECRET_KEY>");
+
+            var credentials = new BasicAWSCredentials("", "");
             var config = new AmazonDynamoDBConfig()
             {
-                RegionEndpoint = RegionEndpoint.APSoutheast2
+                RegionEndpoint = RegionEndpoint.EUWest1
             };
             var client = new AmazonDynamoDBClient(credentials, config);
             services.AddSingleton<IAmazonDynamoDB>(client);
