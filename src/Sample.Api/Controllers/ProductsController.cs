@@ -16,7 +16,7 @@ namespace Sample.Api.Controllers
         [HttpGet("shops/{shopNumber:int}/products/{id:int}")]
         public async Task<ActionResult<ProductDto?>> GetProduct(int shopNumber, int id, [FromServices]GetProductUseCase useCase)
         {
-            var result = await useCase.GetProduct(new GetProduct(shopNumber, id));
+            var result = await useCase.GetProduct(new GetProduct(id, shopNumber));
             if (result is null)
             {
                 return NotFound();

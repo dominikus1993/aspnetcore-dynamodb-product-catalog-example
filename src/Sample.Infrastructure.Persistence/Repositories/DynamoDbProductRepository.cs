@@ -1,4 +1,5 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.DocumentModel;
 using Sample.Core.Model;
 using Sample.Core.Repositories;
 using Sample.Infrastructure.Persistence.Model;
@@ -32,7 +33,13 @@ namespace Sample.Infrastructure.Persistence.Repositories
 
         public IAsyncEnumerable<Product> GetProducts(IEnumerable<int> ids, int shopNumber)
         {
-            throw new NotImplementedException();
+            List<ScanCondition> GetIdScanCondition(IEnumerable<int> idsV)
+            {
+                return idsV.Select(id => new ScanCondition(nameof(DynamoDbProduct.Id), ScanOperator.Equal, id)).ToList();
+            }
+
+            var req = new DynamoDBOperationConfig { ConditionalOperator = ConditionalOperatorValues.Or, QueryFilter = GetIdScanCondition(ids) };
+            var products = _dynamoDBContext.CreateBatchGet<DynamoDbProduct>()
         }
 
         public IAsyncEnumerable<(int Id, bool Exists)> GetProductsExistenceStatus(IEnumerable<int> productIds, CancellationToken token)

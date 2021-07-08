@@ -13,13 +13,13 @@ namespace Sample.Infrastructure.Persistence.Model
     internal class DynamoDbProduct
     {
         [DynamoDBHashKey]
-        public int Id {get; init; }
+        public int Id {get; set; }
         [DynamoDBProperty]
-        public string Name { get; init; }
+        public string Name { get; set; }
         [DynamoDBProperty]
-        public List<int> AvailableIn { get; init; }
+        public List<int> AvailableIn { get; set; }
         [DynamoDBProperty]
-        public List<string> Ean { get; init; }
+        public List<string> Ean { get; set; }
 
         public DynamoDbProduct()
         {
