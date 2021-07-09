@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>dotnet-Sample.Importer-1F792A4F-50EF-4D93-A782-1D10F85339C1</UserSecretsId>
+  </PropertyGroup>
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
+</Project>
