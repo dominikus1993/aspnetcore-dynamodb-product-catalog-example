@@ -14,6 +14,7 @@ namespace Sample.Core.Extensions
         {
             services.AddTransient<GetProductUseCase>();
             services.AddTransient<GetProductsUseCase>();
+            services.AddTransient<ImportProductsUseCase>();
             return services;
         }
     }

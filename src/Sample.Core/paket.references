@@ -1,4 +1,5 @@
 Microsoft.Extensions.DependencyInjection.Abstractions
 LanguageExt.Core
 System.Linq.Async
+Bogus
 Microsoft.Extensions.Logging.Abstractions

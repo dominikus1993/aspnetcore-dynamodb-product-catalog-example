@@ -10,7 +10,7 @@ nuget System.Linq.Async
 nuget FluentAssertions
 nuget Open.ChannelExtensions
 nuget System.Text.Json
-nuget HtmlAgilityPack
+nuget Bogus
 nuget Swashbuckle.AspNetCore
 nuget Microsoft.Extensions.Hosting
 nuget Discord.Net.Webhook
