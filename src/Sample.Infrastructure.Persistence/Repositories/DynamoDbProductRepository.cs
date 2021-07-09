@@ -23,7 +23,7 @@ namespace Sample.Infrastructure.Persistence.Repositories
             _dynamoDBContext = dynamoDBContext;
         }
 
-        public async Task AddProductsAsync(IEnumerable<Product> products, CancellationToken token)
+        public Task AddProductsAsync(IEnumerable<Product> products, CancellationToken token)
         {
             
             var insertS = _dynamoDBContext.CreateBatchWrite<DynamoDbProductAvailability>();
@@ -33,9 +33,8 @@ namespace Sample.Infrastructure.Persistence.Repositories
                 insertP.AddPutItem(new DynamoDbProduct(product));
                 insertS.AddPutItems(DynamoDbProductAvailability.FromProduct(product).ToList());
             }
-
             var batch = _dynamoDBContext.CreateMultiTableBatchWrite(insertS, insertP);
-            await batch.ExecuteAsync(token);
+            return batch.ExecuteAsync(token);
         }
 
         public async Task<Product?> GetProduct(int id, int shopNumber, CancellationToken token = default)

@@ -20,7 +20,7 @@ namespace Sample.Core.UseCase
             _productRepository = productRepository;
         }
 
-        public async Task Execute(CancellationToken cancellationToken)
+        public async Task Execute(CancellationToken cancellationToken = default)
         {
             var faker = new Faker<Product>()
                             .RuleFor(x => x.Id, f => f.UniqueIndex)
