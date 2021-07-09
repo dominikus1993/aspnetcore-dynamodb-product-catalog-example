@@ -25,6 +25,11 @@ namespace Sample.Infrastructure.Persistence.Repositories
 
         public async Task<Product?> GetProduct(int id, int shopNumber, CancellationToken token = default)
         {
+            var existsShop = await _dynamoDBContext.LoadAsync<DynamoDbProductAvailability>(shopNumber, id, token);
+            if (existsShop is null)
+            {
+                return null;
+            }
             var product = await _dynamoDBContext.LoadAsync<DynamoDbProduct>(id, token);
             if (product is null)
             {
@@ -36,13 +41,16 @@ namespace Sample.Infrastructure.Persistence.Repositories
         public async IAsyncEnumerable<Product> GetProducts(IEnumerable<int> ids, int shopNumber, [EnumeratorCancellation] CancellationToken token = default)
         {
 
-            var query = _dynamoDBContext.CreateBatchGet<DynamoDbProduct>();
+            var availibityGet = _dynamoDBContext.CreateBatchGet<DynamoDbProductAvailability>();
+            var productsGet = _dynamoDBContext.CreateBatchGet<DynamoDbProduct>();
             foreach (var id in ids)
             {
-                query.AddKey(id);
+                availibityGet.AddKey(shopNumber, id);
+                productsGet.AddKey(id);
             }
-            await query.ExecuteAsync(token);
-            foreach (var p in query.Results)
+            var batch = _dynamoDBContext.CreateMultiTableBatchGet(availibityGet, productsGet);
+            await batch.ExecuteAsync(token);
+            foreach (var p in productsGet.Results.Join(availibityGet.Results, a => a.Id, b => b.ProductId, (p, _) => p))
             {
                 yield return p.MapToProduct();
             }
