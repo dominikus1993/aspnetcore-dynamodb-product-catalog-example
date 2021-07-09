@@ -1,4 +1,5 @@
-﻿using Amazon.DynamoDBv2.DataModel;
+﻿using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using Sample.Core.Model;
 using Sample.Core.Repositories;
@@ -6,6 +7,7 @@ using Sample.Infrastructure.Persistence.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,9 +23,9 @@ namespace Sample.Infrastructure.Persistence.Repositories
             _dynamoDBContext = dynamoDBContext;
         }
 
-        public async Task<Product?> GetProduct(int id, int shopNumber)
+        public async Task<Product?> GetProduct(int id, int shopNumber, CancellationToken token = default)
         {
-            var product = await _dynamoDBContext.LoadAsync<DynamoDbProduct>(id);
+            var product = await _dynamoDBContext.LoadAsync<DynamoDbProduct>(id, token);
             if (product is null)
             {
                 return null;
@@ -31,20 +33,35 @@ namespace Sample.Infrastructure.Persistence.Repositories
             return product.MapToProduct();
         }
 
-        public IAsyncEnumerable<Product> GetProducts(IEnumerable<int> ids, int shopNumber)
+        public async IAsyncEnumerable<Product> GetProducts(IEnumerable<int> ids, int shopNumber, [EnumeratorCancellation] CancellationToken token = default)
         {
-            List<ScanCondition> GetIdScanCondition(IEnumerable<int> idsV)
-            {
-                return idsV.Select(id => new ScanCondition(nameof(DynamoDbProduct.Id), ScanOperator.Equal, id)).ToList();
-            }
 
-            var req = new DynamoDBOperationConfig { ConditionalOperator = ConditionalOperatorValues.Or, QueryFilter = GetIdScanCondition(ids) };
-            var products = _dynamoDBContext.CreateBatchGet<DynamoDbProduct>()
+            var query = _dynamoDBContext.CreateBatchGet<DynamoDbProduct>();
+            foreach (var id in ids)
+            {
+                query.AddKey(id);
+            }
+            await query.ExecuteAsync(token);
+            foreach (var p in query.Results)
+            {
+                yield return p.MapToProduct();
+            }
         }
 
-        public IAsyncEnumerable<(int Id, bool Exists)> GetProductsExistenceStatus(IEnumerable<int> productIds, CancellationToken token)
+        public async IAsyncEnumerable<(int Id, bool Exists)> GetProductsExistenceStatus(IEnumerable<int> productIds, [EnumeratorCancellation]CancellationToken token = default)
         {
-            throw new NotImplementedException();
+
+            var query = _dynamoDBContext.CreateBatchGet<DynamoDbProduct>();
+            foreach (var id in productIds)
+            {
+                query.AddKey(id);
+            }
+            await query.ExecuteAsync(token);
+            var items = query.Results.Select(x => x.Id).ToHashSet();
+            foreach (var id in productIds)
+            {
+                yield return (id, items.Contains(id));
+            }
         }
     }
 }

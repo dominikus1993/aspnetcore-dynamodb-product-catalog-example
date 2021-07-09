@@ -22,6 +22,7 @@ nuget Microsoft.Extensions.Configuration.EnvironmentVariables
 nuget Microsoft.Extensions.Configuration.Json
 nuget Microsoft.Extensions.Configuration.UserSecrets
 nuget AWSSDK.DynamoDBv2
+nuget AWSSDK.Extensions.NETCore.Setup
 nuget Microsoft.Extensions.Http
 nuget Microsoft.AspNetCore.Http.Features
 nuget Microsoft.Extensions.Logging.Abstractions

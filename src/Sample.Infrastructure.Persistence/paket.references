@@ -1,3 +1,5 @@
 Microsoft.Extensions.DependencyInjection.Abstractions
 Microsoft.Extensions.Logging.Abstractions
+Microsoft.Extensions.Configuration.Abstractions
 AWSSDK.DynamoDBv2
+AWSSDK.Extensions.NETCore.Setup

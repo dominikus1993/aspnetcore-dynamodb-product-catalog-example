@@ -10,8 +10,8 @@ namespace Sample.Core.Repositories
 {
     public interface IProductRepository
     {
-        IAsyncEnumerable<(int Id, bool Exists)> GetProductsExistenceStatus(IEnumerable<int> productIds, CancellationToken token);
-        IAsyncEnumerable<Product> GetProducts(IEnumerable<int> ids, int shopNumber);
-        Task<Product?> GetProduct(int id, int shopNumber);
+        IAsyncEnumerable<(int Id, bool Exists)> GetProductsExistenceStatus(IEnumerable<int> productIds, CancellationToken token = default);
+        IAsyncEnumerable<Product> GetProducts(IEnumerable<int> ids, int shopNumber, CancellationToken token = default);
+        Task<Product?> GetProduct(int id, int shopNumber, CancellationToken token = default);
     }
 }

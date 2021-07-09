@@ -29,7 +29,7 @@ namespace Sample.Api
 
             services.AddControllers();
             services.AddCore();
-            services.AddInfrastructure();
+            services.AddInfrastructure(Configuration);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sample.Api", Version = "v1" });
