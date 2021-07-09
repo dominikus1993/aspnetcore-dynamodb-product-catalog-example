@@ -22,13 +22,17 @@ namespace Sample.Core.UseCase
 
         public async Task Execute(CancellationToken cancellationToken = default)
         {
+            var ids = Enumerable.Range(1, 500).ToList();
             var faker = new Faker<Product>()
-                            .RuleFor(x => x.Id, f => f.UniqueIndex)
-                            .RuleFor(x => x.Name, f => f.Commerce.ProductName())
-                            .RuleFor(x => x.AvailableIn, _ => Enumerable.Range(1, 500).ToList())
-                            .RuleFor(x => x.Ean, f => new List<string>() { f.Commerce.Ean8() });
-            var data = faker.Generate(1000);
-            await _productRepository.AddProductsAsync(data, cancellationToken);
+                            .CustomInstantiator(f =>
+                            {
+                                return new Product(f.UniqueIndex, f.Commerce.ProductName(), ids, new List<string>() { f.Commerce.Ean8() });
+                            });
+            for (int i = 0; i < 10; i++)
+            {
+                var data = faker.Generate(1);
+                await _productRepository.AddProductsAsync(data, cancellationToken);
+            }
         }
     }
 }

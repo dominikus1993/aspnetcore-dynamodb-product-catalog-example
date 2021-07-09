@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Sample.Api.Responses;
 using Sample.Core.Dto;
 using Sample.Core.UseCase;
 using System;
@@ -14,7 +15,7 @@ namespace Sample.Api.Controllers
     public class ProductsController : ControllerBase
     {
         [HttpGet("shops/{shopNumber:int}/products/{id:int}")]
-        public async Task<ActionResult<ProductDto?>> GetProduct(int shopNumber, int id, [FromServices]GetProductUseCase useCase)
+        public async Task<ActionResult<ProductResponse?>> GetProduct(int shopNumber, int id, [FromServices]GetProductUseCase useCase)
         {
             var result = await useCase.GetProduct(new GetProduct(id, shopNumber));
             if (result is null)
@@ -22,7 +23,7 @@ namespace Sample.Api.Controllers
                 return NotFound();
             }
 
-            return Ok(result);
+            return Ok(new ProductResponse(result));
         }
 
         [HttpGet("shops/{shopNumber:int}/products")]

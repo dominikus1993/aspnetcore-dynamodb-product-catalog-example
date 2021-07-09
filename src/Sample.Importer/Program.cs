@@ -41,7 +41,9 @@ namespace Sample.Importer
         [PrimaryCommand]
         public async Task RemoveFiles([FromService] ImportProductsUseCase useCase)
         {
+            Console.WriteLine($"Start {DateTime.Now}");
             await useCase.Execute();
+            Console.WriteLine($"End {DateTime.Now}");
         }
     }
 
