@@ -4,9 +4,9 @@
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>dotnet-Sample.Importer-1F792A4F-50EF-4D93-A782-1D10F85339C1</UserSecretsId>
   </PropertyGroup>
-  <Import Project="..\..\.paket\Paket.Restore.targets" />
   <ItemGroup>
     <ProjectReference Include="..\Sample.Api\Sample.Api.csproj" />
     <ProjectReference Include="..\Sample.Core\Sample.Core.csproj" />
   </ItemGroup>
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
