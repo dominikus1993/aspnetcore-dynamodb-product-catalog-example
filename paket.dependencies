@@ -7,6 +7,7 @@ nuget Cocona
 nuget Argu 
 nuget LanguageExt.Core
 nuget FluentAssertions
+nuget MoreLINQ
 nuget Open.ChannelExtensions
 nuget System.Text.Json
 nuget Bogus

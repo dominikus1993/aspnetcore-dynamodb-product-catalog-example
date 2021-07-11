@@ -203,6 +203,7 @@ NUGET
     Moq (4.16.1)
       Castle.Core (>= 4.4)
       System.Threading.Tasks.Extensions (>= 4.5.4)
+    MoreLINQ (3.3.2)
     NETStandard.Library (2.0.3)
       Microsoft.NETCore.Platforms (>= 1.1)
     Newtonsoft.Json (13.0.1)

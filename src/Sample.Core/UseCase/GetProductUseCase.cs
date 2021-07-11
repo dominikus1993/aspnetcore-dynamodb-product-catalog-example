@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Sample.Core.UseCase
@@ -19,9 +20,9 @@ namespace Sample.Core.UseCase
             _productRepository = productRepository;
         }
 
-        public async Task<ProductDto?> GetProduct(GetProduct query)
+        public async Task<ProductDto?> GetProduct(GetProduct query, CancellationToken cancellationToken = default)
         {
-            var result = await _productRepository.GetProduct(query.Id, query.ShopNumber);
+            var result = await _productRepository.GetProduct(query.Id, query.ShopNumber, cancellationToken);
 
             if (result is null)
             {

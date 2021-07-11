@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using MoreLinq;
 using Sample.Core.Model;
 using Sample.Core.Repositories;
 using System;
@@ -22,17 +23,26 @@ namespace Sample.Core.UseCase
 
         public async Task Execute(CancellationToken cancellationToken = default)
         {
-            var ids = Enumerable.Range(1, 500).ToList();
+            var ids = Enumerable.Range(1, 1000).ToList();
             var faker = new Faker<Product>()
                             .CustomInstantiator(f =>
                             {
                                 return new Product(f.UniqueIndex, f.Commerce.ProductName(), ids, new List<string>() { f.Commerce.Ean8() });
                             });
-            for (int i = 0; i < 10; i++)
+            var data = faker.Generate(10000);
+            var pageSize = 100;       
+            var tasks = new List<Task>(data.Count);
+            var pages = Math.Ceiling((double)data.Count / pageSize);
+            Console.WriteLine(pages);
+            for (int i = 0; i < pages; i++)
             {
-                var data = faker.Generate(1);
-                await _productRepository.AddProductsAsync(data, cancellationToken);
+                var products = data.Skip(pageSize * (i - 1))
+                                    .Take(pageSize)
+                                    .ToList();
+                var t = _productRepository.AddProductsAsync(products, cancellationToken);
             }
+            await Task.WhenAll(tasks);
+            
         }
     }
 }

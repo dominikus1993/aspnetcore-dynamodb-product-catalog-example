@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Sample.Core.UseCase
@@ -19,11 +20,11 @@ namespace Sample.Core.UseCase
             _productRepository = productRepository;
         }
 
-        public async Task<IEnumerable<ProductDto>> GetProducts(GetProducts query)
+        public async Task<IEnumerable<ProductDto>> GetProducts(GetProducts query, CancellationToken cancellationToken = default)
         {
-            var result = await _productRepository.GetProducts(query.Ids, query.ShopNumber)
+            var result = await _productRepository.GetProducts(query.Ids, query.ShopNumber, cancellationToken)
                                                     .Select(product => new ProductDto(product))
-                                                    .ToListAsync();
+                                                    .ToListAsync(cancellationToken);
             if (result is null || result.Count == 0)
             {
                 return Enumerable.Empty<ProductDto>();

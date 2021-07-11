@@ -6,6 +6,7 @@ using Sample.Core.UseCase;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Sample.Api.Controllers
@@ -15,9 +16,9 @@ namespace Sample.Api.Controllers
     public class ProductsController : ControllerBase
     {
         [HttpGet("shops/{shopNumber:int}/products/{id:int}")]
-        public async Task<ActionResult<ProductResponse?>> GetProduct(int shopNumber, int id, [FromServices]GetProductUseCase useCase)
+        public async Task<ActionResult<ProductResponse?>> GetProduct(int shopNumber, int id, [FromServices]GetProductUseCase useCase, CancellationToken cancellationToken)
         {
-            var result = await useCase.GetProduct(new GetProduct(id, shopNumber));
+            var result = await useCase.GetProduct(new GetProduct(id, shopNumber), cancellationToken);
             if (result is null)
             {
                 return NotFound();
@@ -27,9 +28,9 @@ namespace Sample.Api.Controllers
         }
 
         [HttpGet("shops/{shopNumber:int}/products")]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> GetProducts(int shopNumber, [FromQuery] IEnumerable<int> productIds, [FromServices] GetProductsUseCase useCase)
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetProducts(int shopNumber, [FromQuery] IEnumerable<int> productIds, [FromServices] GetProductsUseCase useCase, CancellationToken cancellationToken)
         {
-            var result = await useCase.GetProducts(new GetProducts(productIds, shopNumber));
+            var result = await useCase.GetProducts(new GetProducts(productIds, shopNumber), cancellationToken);
             if (result is null)
             {
                 return NoContent();

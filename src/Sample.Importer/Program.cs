@@ -10,10 +10,11 @@ using Cocona.Hosting;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using Sample.Core.UseCase;
+using System.Threading;
 
 namespace Sample.Importer
 {
-    public class Program
+    public class Program : CoconaConsoleAppBase
     {
         public static async Task Main(string[] args)
         {
@@ -42,7 +43,7 @@ namespace Sample.Importer
         public async Task RemoveFiles([FromService] ImportProductsUseCase useCase)
         {
             Console.WriteLine($"Start {DateTime.Now}");
-            await useCase.Execute();
+            await useCase.Execute(base.Context.CancellationToken);
             Console.WriteLine($"End {DateTime.Now}");
         }
     }

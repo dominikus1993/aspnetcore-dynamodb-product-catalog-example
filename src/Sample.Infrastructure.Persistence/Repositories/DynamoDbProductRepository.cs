@@ -1,6 +1,7 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
+using Microsoft.Extensions.Logging;
 using Sample.Core.Model;
 using Sample.Core.Repositories;
 using Sample.Infrastructure.Persistence.Model;
@@ -17,24 +18,28 @@ namespace Sample.Infrastructure.Persistence.Repositories
     internal class DynamoDbProductRepository : IProductRepository
     {
         private IDynamoDBContext _dynamoDBContext;
+        private ILogger<DynamoDbProductRepository> _logger;
 
-        public DynamoDbProductRepository(IDynamoDBContext dynamoDBContext)
+        public DynamoDbProductRepository(IDynamoDBContext dynamoDBContext, ILogger<DynamoDbProductRepository> logger)
         {
             _dynamoDBContext = dynamoDBContext;
+            _logger = logger;
         }
 
-        public Task AddProductsAsync(IEnumerable<Product> products, CancellationToken token)
+        public async Task AddProductsAsync(IEnumerable<Product> products, CancellationToken token)
         {
-            
-            var insertS = _dynamoDBContext.CreateBatchWrite<DynamoDbProductAvailability>();
+            _logger.LogInformation("Start in repo");
+            //var insertS = _dynamoDBContext.CreateBatchWrite<DynamoDbProductAvailability>();
             var insertP = _dynamoDBContext.CreateBatchWrite<DynamoDbProduct>();
             foreach (var product in products)
             {
                 insertP.AddPutItem(new DynamoDbProduct(product));
-                insertS.AddPutItems(DynamoDbProductAvailability.FromProduct(product).ToList());
+                //insertS.AddPutItems(DynamoDbProductAvailability.FromProduct(product).ToList());
             }
-            var batch = _dynamoDBContext.CreateMultiTableBatchWrite(insertS, insertP);
-            return batch.ExecuteAsync(token);
+            _logger.LogInformation("Start batch in repo");
+            //var batch = _dynamoDBContext.CreateMultiTableBatchWrite(insertS, insertP);
+            await insertP.ExecuteAsync(token);
+            _logger.LogInformation("End batch in repo");
         }
 
         public async Task<Product?> GetProduct(int id, int shopNumber, CancellationToken token = default)
@@ -62,6 +67,7 @@ namespace Sample.Infrastructure.Persistence.Repositories
                 availibityGet.AddKey(shopNumber, id);
                 productsGet.AddKey(id);
             }
+ 
             var batch = _dynamoDBContext.CreateMultiTableBatchGet(availibityGet, productsGet);
             await batch.ExecuteAsync(token);
             foreach (var p in productsGet.Results.Join(availibityGet.Results, a => a.Id, b => b.ProductId, (p, _) => p))
