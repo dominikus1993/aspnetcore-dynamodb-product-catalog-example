@@ -1,52 +1,45 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Sample.Core.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Cocona;
-using Cocona.Hosting;
-using Microsoft.Extensions.Configuration;
-using System.IO;
 using Sample.Core.UseCase;
-using System.Threading;
+using Cocona.Filters;
 
-namespace Sample.Importer
+
+var builder = CoconaApp.CreateBuilder();
+builder.Services.AddCore();
+builder.Services.AddInfrastructure(builder.Configuration);
+
+var app = builder.Build();
+
+app.AddCommand(async (ImportProductsUseCase useCase, CoconaAppContext ctx) =>
 {
-    public class Program : CoconaConsoleAppBase
+    await useCase.Execute(ctx.CancellationToken);
+});
+
+await app.RunAsync().ConfigureAwait(false);
+
+class LoggingFilter : CommandFilterAttribute
+{
+    private readonly ILogger _logger;
+
+    public LoggingFilter(ILogger<LoggingFilter> logger)
     {
-        public static async Task Main(string[] args)
+        _logger = logger;
+    }
+    public override async ValueTask<int> OnCommandExecutionAsync(CoconaCommandExecutingContext ctx, CommandExecutionDelegate next)
+    {
+        _logger.LogInformation("Before: {Name}", ctx.Command.Name);
+        try
         {
-            await CreateHostBuilder(args)
-                 .UseCocona(args, new[] { typeof(Program) })
-                 .Build()
-                 .RunAsync();
+            return await next(ctx).ConfigureAwait(false);
         }
-
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration(builder =>
-                {
-                    builder.SetBasePath(Directory.GetCurrentDirectory())
-                        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                        .AddEnvironmentVariables()
-                        .AddCommandLine(args);
-                })
-                .ConfigureServices((hostContext, services) =>
-                {
-                    services.AddCore();
-                    services.AddInfrastructure(hostContext.Configuration);
-                });
-
-        [PrimaryCommand]
-        public async Task RemoveFiles([FromService] ImportProductsUseCase useCase)
+        catch (Exception ex)
         {
-            Console.WriteLine($"Start {DateTime.Now}");
-            await useCase.Execute(base.Context.CancellationToken);
-            Console.WriteLine($"End {DateTime.Now}");
+            _logger.LogError(ex, "Error: {Name}", ctx.Command.Name);
+            throw;
+        }
+        finally
+        {
+            _logger.LogInformation("End: {Name}", ctx.Command.Name);
         }
     }
-
-
 }
