@@ -16,10 +16,5 @@ namespace Sample.Infrastructure.Persistence.Model
 
         [DynamoDBRangeKey]
         public int ProductId { get; set; }
-
-        public static IEnumerable<DynamoDbProductAvailability> FromProduct(Product product)
-        {
-            return product.AvailableIn.Select(x => new DynamoDbProductAvailability() { ProductId = product.Id, ShopId = x });
-        }
     }
 }

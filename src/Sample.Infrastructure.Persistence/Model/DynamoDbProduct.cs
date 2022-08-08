@@ -16,32 +16,26 @@ namespace Sample.Infrastructure.Persistence.Model
         public int Id {get; set; }
         [DynamoDBProperty]
         public string Name { get; set; }
-        [DynamoDBProperty]
-        public List<int> AvailableIn { get; set; }
-        [DynamoDBProperty]
-        public List<string> Ean { get; set; }
 
         public DynamoDbProduct()
         {
 
         }
 
-        public DynamoDbProduct(int id, string name, List<int> availableIn, List<string> ean)
+        public DynamoDbProduct(int id, string name)
         {
             Id = id;
             Name = name;
-            AvailableIn = availableIn;
-            Ean = ean;
         }
 
-        public DynamoDbProduct(Product product) : this(product.Id, product.Name, product.AvailableIn, product.Ean)
+        public DynamoDbProduct(Product product) : this(product.Id, product.Name)
         {
 
         }
 
         public Product MapToProduct()
         {
-            return new Product(Id, Name, AvailableIn, Ean);
+            return new Product(Id, Name);
         }
     }
 }

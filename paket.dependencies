@@ -29,7 +29,14 @@ nuget Serilog.Sinks.Trace
 nuget Serilog.Sinks.Seq
 nuget Serilog.Formatting.Elasticsearch
 
-nuget Microsoft.NET.Test.Sdk
+nuget FluentValidation
+nuget FluentValidation.AspNetCore
+nuget AutoFixture
+nuget FluentAssertions
+nuget xunit
 nuget xunit.runner.visualstudio
+nuget Moq
+nuget Microsoft.NET.Test.Sdk
+nuget Testcontainers 
+nuget Alba
 nuget coverlet.collector
-nuget FsUnit.xUnit

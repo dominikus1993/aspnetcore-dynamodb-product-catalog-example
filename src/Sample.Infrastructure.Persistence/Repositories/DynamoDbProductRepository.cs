@@ -42,13 +42,8 @@ namespace Sample.Infrastructure.Persistence.Repositories
             _logger.LogInformation("End batch in repo");
         }
 
-        public async Task<Product?> GetProduct(int id, int shopNumber, CancellationToken token = default)
+        public async Task<Product?> GetProduct(int id, CancellationToken token = default)
         {
-            var existsShop = await _dynamoDBContext.LoadAsync<DynamoDbProductAvailability>(shopNumber, id, token);
-            if (existsShop is null)
-            {
-                return null;
-            }
             var product = await _dynamoDBContext.LoadAsync<DynamoDbProduct>(id, token);
             if (product is null)
             {

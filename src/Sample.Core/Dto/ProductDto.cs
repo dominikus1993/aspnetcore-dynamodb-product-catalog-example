@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Sample.Core.Dto
 {
-    public record ProductDto(int Id, string Name, List<int> AvailableIn, List<string> Ean)
+    public record ProductDto(int Id, string Name)
     {
-        public ProductDto(Product product) : this( product.Id, product.Name, product.AvailableIn, product.Ean)
+        public ProductDto(Product product) : this( product.Id, product.Name)
         {
 
         }

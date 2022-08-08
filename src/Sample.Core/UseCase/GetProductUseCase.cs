@@ -22,7 +22,7 @@ namespace Sample.Core.UseCase
 
         public async Task<ProductDto?> GetProduct(GetProduct query, CancellationToken cancellationToken = default)
         {
-            var result = await _productRepository.GetProduct(query.Id, query.ShopNumber, cancellationToken);
+            var result = await _productRepository.GetProduct(query.Id, cancellationToken);
 
             if (result is null)
             {

@@ -27,7 +27,7 @@ namespace Sample.Core.UseCase
             var faker = new Faker<Product>()
                             .CustomInstantiator(f =>
                             {
-                                return new Product(f.UniqueIndex, f.Commerce.ProductName(), ids, new List<string>() { f.Commerce.Ean8() });
+                                return new Product(f.UniqueIndex, f.Commerce.ProductName());
                             });
             var data = faker.Generate(10000);
             var pageSize = 100;       

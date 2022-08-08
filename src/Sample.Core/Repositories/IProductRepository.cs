@@ -12,7 +12,7 @@ namespace Sample.Core.Repositories
     {
         IAsyncEnumerable<(int Id, bool Exists)> GetProductsExistenceStatus(IEnumerable<int> productIds, CancellationToken token = default);
         IAsyncEnumerable<Product> GetProducts(IEnumerable<int> ids, int shopNumber, CancellationToken token = default);
-        Task<Product?> GetProduct(int id, int shopNumber, CancellationToken token = default);
+        Task<Product?> GetProduct(int id, CancellationToken token = default);
         Task AddProductsAsync(IEnumerable<Product> products, CancellationToken token);
     }
 }

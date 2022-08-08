@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Sample.Core.Model
 {
-    public record Product(int Id, string Name, List<int> AvailableIn, List<string> Ean);
+    public record Product(int Id, string Name);
 }

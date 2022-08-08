@@ -12,15 +12,10 @@ namespace Sample.Core.Extensions
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-
             var aws = configuration.GetAWSOptions();
-            var credentials = new BasicAWSCredentials(configuration["AWS:PublicKey"], configuration["AWS:SecretKey"]);
-            var config = new AmazonDynamoDBConfig()
-            {
-                RegionEndpoint = aws.Region
-            };
-            var client = new AmazonDynamoDBClient(credentials, config);
-            services.AddSingleton<IAmazonDynamoDB>(client);
+            services.AddDefaultAWSOptions(configuration.GetAWSOptions());
+            services.AddAWSService<IAmazonDynamoDB>();
+            services.AddScoped<IDynamoDBContext, DynamoDBContext>();
             services.AddSingleton<IDynamoDBContext, DynamoDBContext>();
             services.AddTransient<IProductRepository, DynamoDbProductRepository>();
 
